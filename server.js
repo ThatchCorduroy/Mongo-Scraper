@@ -79,11 +79,11 @@ app.get("/", function(req, res) {
           result.summary = $(this).find(".abstract p").text();
           result.author = $(this).find(".authors .display-name").text().slice(4)
           result.image = $(this).find("img").attr("src")
+          
 
-          db.Headline.create(result)
+          db.Headline.update({headline:result.headline}, result, {upsert: true})
           .then(function(dbHeadline) {
             // View the added result in the console
-            console.log(dbHeadline);
           })
           .catch(function(err) {
             // If an error occurred, send it to the client
@@ -95,36 +95,30 @@ app.get("/", function(req, res) {
     })
     .then(function () {
       db.Headline.find({})
+        .populate("comment")
         .then(function(dbHeadlines) {
-          // If we were able to successfully find Articles, send them back to the client
           console.log(dbHeadlines);
           res.render("index", {"headlines": dbHeadlines});
         })
         .catch(function(err) {
-          // If an error occurred, send it to the client
           res.json(err);
         });
     });
   });
 
   app.post("/headlines/:id", function(req, res) {
-    // Create a new note and pass the req.body to the entry
 
-    console.log(req.body);
-    
     db.Comment.create(req.body)
       .then(function(dbComment) {
-        // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
-        // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
-        // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-        return db.Headline.findOneAndUpdate({ _id: req.params.id }, { note: dbComment._id }, { new: true });
+
+        return db.Headline.findOneAndUpdate({ _id: req.params.id }, {$push: {comment: dbComment._id}}, { new: true });
       })
       .then(function(dbHeadline) {
-        // If we were able to successfully update an Article, send it back to the client
+
         res.json(dbHeadline);
       })
       .catch(function(err) {
-        // If an error occurred, send it to the client
+
         res.json(err);
       });
   });

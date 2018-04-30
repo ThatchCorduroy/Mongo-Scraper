@@ -11,7 +11,7 @@
                 <h4 class="react">React -- tell us what YOU think!!!</h4>
                 <form role="form" >
                     <div class="form-group" >
-                        <input type="text" class="form-control inputbox">
+                        <input type="text" id={{this.id}} data-id={{this._id}} class="form-control inputbox">
                     </div>
                     <button class="commentsubmit" type="submit" data-id={{this._id}}>Submit</button>
                 </form>
@@ -20,7 +20,11 @@
         <div class="col-md-6">
             <div class="commentsarea">
                 <h4 class="react">Here's What Others are Saying:</h4>
-                <div class="comments">{{this.comments}}</div>
+                <div class="comments" data-id={{this._id}}>
+                    {{#each this.comment}}
+                        <p>{{this.body}}</p>
+                    {{/each}}
+                </div>
             </div>
             
         </div>
