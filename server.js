@@ -57,18 +57,16 @@ mongoose.connect(MONGODB_URI);
 // =============================================================
 
 app.get("/", function(req, res) {
-    // First, we grab the body of the html with request
+
     axios.get("https://pitchfork.com/news/").then(function(response) {
-      // Then, we load that into cheerio and save it to $ for a shorthand selector
+
       var $ = cheerio.load(response.data);
 
-      var hero = $(".news-hero .article-details");
+      var hero = $(".news-hero");
       var second = $(".second-tier .latest-module");
       var third = $(".third-tier .latest-module");
     
       var newArr = [hero, second, third];
-        //console.log($(this));
-      // Now, we grab every h2 within an article tag, and do the following:
 
       newArr.forEach(function(element) {
         element.each(function (i, element) {
@@ -83,18 +81,17 @@ app.get("/", function(req, res) {
 
           db.Headline.update({headline:result.headline}, result, {upsert: true})
           .then(function(dbHeadline) {
-            // View the added result in the console
+        
           })
           .catch(function(err) {
-            // If an error occurred, send it to the client
-            console.log(err);
-            //return res.json(err);
+
+            return res.json(err);
           });
         });
       })
     })
     .then(function () {
-      db.Headline.find({})
+      db.Headline.find({}).sort([['_id', 1]])
         .populate("comment")
         .then(function(dbHeadlines) {
           console.log(dbHeadlines);
@@ -114,6 +111,8 @@ app.get("/", function(req, res) {
         return db.Headline.findOneAndUpdate({ _id: req.params.id }, {$push: {comment: dbComment._id}}, { new: true });
       })
       .then(function(dbHeadline) {
+
+
 
         res.json(dbHeadline);
       })

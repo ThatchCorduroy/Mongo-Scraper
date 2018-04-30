@@ -8,12 +8,17 @@
   border-bottom: 1px solid black;
 }
 
+.link {
+  color: black;
+}
+
 .headline {
   padding-top: 50px;
   background-color: white;
   font-family: 'Abril Fatface', cursive;
   text-align: center;
   font-size: 30px;
+  font: black
 }
 
 .react {

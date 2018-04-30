@@ -3,7 +3,9 @@
         <div class="col-md-12 head">Pitchfork News</div>
     </div>
     {{#each headlines}}
-    <div class="headline" data-id={{this._id}}>{{this.headline}}</div>
+    <a class="link" href="https://pitchfork.com/{{this.url}}">
+        <div class="headline" data-id={{this._id}}>{{this.headline}}</div>
+    </a>
     <div data-id={{this._id}} style="opacity:0.5; filter:alpha(opacity=50); height:600px; background-attachment:fixed; background-position:center; background-repeat:no-repeat; background-size:cover; background-image:url({{this.image}};"></div>
     <div class="row inputrow">
         <div class="col-md-6">
